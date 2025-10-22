@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.c                                            :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/17 15:56:54 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/22 10:51:37 by nmascaro         ###   ########.fr       */
+/*   Created: 2025/10/22 10:38:36 by nmascaro          #+#    #+#             */
+/*   Updated: 2025/10/22 10:55:59 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	philo_life_routine(t_philo) // each philo does this
+void	error_and_exit(const char *message)
 {
-	 //this routine will be taking forks, eating, sleeping and thinking
-	
+	printf("%s\n", message);
+	exit (EXIT_FAILURE);
 }
 
-void	init_structs(t_philo *philo, t_simulation *data)
+void	cleanup(t_simulation *data)
 {
-	
+
 }
