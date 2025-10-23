@@ -6,50 +6,49 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:56:54 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/22 15:45:37 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/23 13:32:06 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	philo_life_routine(t_philo) // each philo does this
+ //this routine will be taking forks, eating, sleeping and thinking
+static void	*philo_life_routine(void *arg) // each philo does this
 {
-	 //this routine will be taking forks, eating, sleeping and thinking
+	
 	
 }
 
-t_philo	*init_structs(t_simulation *data)
+static void	monitor_routine(void *arg)
 {
-	t_philo	*philos;
-	int	i;
+
+}
+// create thread for each philo -> each thread runs the philo_life_routine function
+// start the monitoring -> separate thread that keeps checking time of last eat for each philo
+// wait for threads to finish (pthread join) -> ends when a philo dies or all philos have eaten the required times
+void	start_simulation(t_simulation *data, t_philo *philo)
+{
+	int i;
+	pthread_t *philo_thr;
+	pthread_t monitor;
+	struct	timeval tv; // stores seconds (since Jan 1 1970) and microseconds (1 second = 1.000.000 microsec)
 
 	i = 0;
-	data->fork = malloc(sizeof(pthread_mutex_t) * data->philos_num);
-	if (!data->fork)
-		return (NULL);
+	gettimeofday(&tv, NULL); // fills struct with current system time
+	data->starting_time = tv.tv_sec * 1000 + tv.tv_usec / 1000; // converts to milliseconds bboth numbers
+	philo_thr = malloc(sizeof(pthread_t) * data->philos_num);
 	while (i < data->philos_num)
 	{
-		pthread_mutex_init(&data->fork[i], NULL);
+		pthread_create(&philo_thr[i], NULL, philo_life_routine, &philo[i]);
 		i++;
 	}
-	philos = malloc (sizeof(t_philo) * data->philos_num);
-	if (philos)
-	{
-		free(data->fork);
-		return (NULL);
-	}
+	pthread_create(&monitor, NULL, monitor_routine, data);
 	i = 0;
 	while (i < data->philos_num)
 	{
-		philos[i].id = i + 1;
-		philos[i].left_fork = &data->fork[i];
-		philos[i].right_fork = &data->fork[(i + 1) % data->philos_num];
-		philos[i].time_of_last_eat = data->starting_time;
-		philos[i].times_eaten = 0;
-		philos[i].data = data;
+		pthread_join(philo_thr[i], NULL); // waits until philo thread i finishes
 		i++;
 	}
-	pthread_mutex_init(&data->mutex_print, NULL);
-	data->stop_simulation = 0;
-	return (philos);
+	pthread_join(monitor, NULL);
+	free(philo_thr);
 }

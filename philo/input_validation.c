@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 10:29:08 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/22 12:33:26 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/23 10:47:53 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static int	get_valid_arg(char *str, char *message)
 	long value;
 
 	value = ft_atol(str);
-	if (value <= 0 || value > INT_MAX)
+	if (value == 0 || value > INT_MAX)
 		error_and_exit(message);
 	return ((int)value);
 }
