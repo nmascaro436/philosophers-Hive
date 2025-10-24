@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 10:38:36 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/23 11:06:37 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/24 12:32:42 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,15 @@ void	error_and_exit(const char *message)
 void	cleanup(t_simulation *data)
 {
 
+}
+long	time_since_start(t_simulation *data)
+{
+	struct timeval tv;
+	long	current_time;
+
+	gettimeofday(&tv, NULL);
+	current_time = tv.tv_sec * 1000 + tv.tv_usec / 1000;
+	return (current_time - data->starting_time);
 }
 t_philo	*init_structs(t_simulation *data)
 {
