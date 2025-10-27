@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 11:37:14 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/24 12:34:42 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/27 11:49:20 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,24 @@ void	think(t_philo *philo)
 
 void	take_forks(t_philo *philo)
 {
-	if (philo->id % 2 == 0)
+	if (philo->id % 2 == 0) //even
 	{
-		pthread_mutex_lock(&philo->left_fork);
+		pthread_mutex_lock(philo->left_fork);
 		pthread_mutex_lock(&philo->data->mutex_print);
 		printf("%ld %d has taken a fork\n", time_since_start(philo->data), philo->id);
 		pthread_mutex_unlock(&philo->data->mutex_print);
-		pthread_mutex_lock(&philo->right_fork);
+		pthread_mutex_lock(philo->right_fork);
 		pthread_mutex_lock(&philo->data->mutex_print);
 		printf("%ld %d has taken a fork\n", time_since_start(philo->data), philo->id);
 		pthread_mutex_unlock(&philo->data->mutex_print);
 	}
 	else
 	{
-		pthread_mutex_lock(&philo->right_fork);
+		pthread_mutex_lock(philo->right_fork);
 		pthread_mutex_lock(&philo->data->mutex_print);
 		printf("%ld %d has taken a fork\n", time_since_start(philo->data), philo->id);
 		pthread_mutex_unlock(&philo->data->mutex_print);
-		pthread_mutex_lock(&philo->left_fork);
+		pthread_mutex_lock(philo->left_fork);
 		pthread_mutex_lock(&philo->data->mutex_print);
 		printf("%ld %d has taken a fork\n", time_since_start(philo->data), philo->id);
 		pthread_mutex_unlock(&philo->data->mutex_print);

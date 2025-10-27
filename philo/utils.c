@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 10:38:36 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/24 12:32:42 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/27 10:52:45 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,20 @@ void	error_and_exit(const char *message)
 	exit (EXIT_FAILURE);
 }
 
-void	cleanup(t_simulation *data)
+void	cleanup(t_simulation *data, t_philo *philos)
 {
+	int i;
 
+	i = 0;
+	while (i < data->philos_num)
+	{
+		pthread_mutex_destroy(&data->fork[i]);
+		i++;
+	}
+	pthread_mutex_destroy(&data->mutex_print);
+	pthread_mutex_destroy(&data->mutex_stop_simulation);
+	free(data->fork);
+	free(philos);
 }
 long	time_since_start(t_simulation *data)
 {
@@ -64,5 +75,6 @@ t_philo	*init_structs(t_simulation *data)
 	}
 	pthread_mutex_init(&data->mutex_print, NULL); // ensures only one thread prints at a time, no overlap
 	data->stop_simulation = 0;
+	pthread_mutex_init(&data->mutex_stop_simulation, NULL);
 	return (philos);
 }

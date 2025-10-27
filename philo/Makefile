@@ -6,14 +6,14 @@
 #    By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/17 11:34:12 by nmascaro          #+#    #+#              #
-#    Updated: 2025/10/17 11:37:02 by nmascaro         ###   ########.fr        #
+#    Updated: 2025/10/27 12:12:35 by nmascaro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-SRCS = 
+SRCS = input_validation.c main.c philo.c routine_actions.c utils.c
 OBJS = $(SRCS:.c=.o)
 
 .SECONDARY: $(OBJS)
