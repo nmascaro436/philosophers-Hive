@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 11:37:49 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/27 12:11:19 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/27 12:18:28 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <pthread.h>
 # include <sys/time.h> 
 # include <limits.h> 
+# include <unistd.h>
 
 typedef struct s_simulation
 {
@@ -55,5 +56,7 @@ void	take_forks(t_philo *philo);
 void	eat(t_philo *philo);
 void	leave_forks(t_philo *philo);
 void	sleep_philo(t_philo *philo);
+int	is_simulation_over(t_simulation *data);
+void	set_stop_flag(t_simulation *data, int value);
 
 #endif

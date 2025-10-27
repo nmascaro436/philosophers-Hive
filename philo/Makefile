@@ -6,14 +6,14 @@
 #    By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/17 11:34:12 by nmascaro          #+#    #+#              #
-#    Updated: 2025/10/27 12:12:35 by nmascaro         ###   ########.fr        #
+#    Updated: 2025/10/27 12:27:05 by nmascaro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-SRCS = input_validation.c main.c philo.c routine_actions.c utils.c
+SRCS = input_validation.c main.c philo.c routine_actions.c utils.c monitor.c
 OBJS = $(SRCS:.c=.o)
 
 .SECONDARY: $(OBJS)
@@ -21,7 +21,7 @@ OBJS = $(SRCS:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJS) 
-	ar rcs $(NAME) $(OBJS) 
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
 .c.o:
 	$(CC) $(CFLAGS) -c $< -o $@

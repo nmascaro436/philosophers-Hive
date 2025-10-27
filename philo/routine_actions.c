@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 11:37:14 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/27 11:49:20 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/27 12:18:57 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ void	eat(t_philo *philo)
 
 void	leave_forks(t_philo *philo)
 {
-	pthread_mutex_unlock(&philo->left_fork);
-	pthread_mutex_unlock(&philo->right_fork);
+	pthread_mutex_unlock(philo->left_fork);
+	pthread_mutex_unlock(philo->right_fork);
 }
 
 void	sleep_philo(t_philo *philo)

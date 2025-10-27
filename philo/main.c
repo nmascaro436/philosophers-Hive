@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 12:41:23 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/27 10:41:12 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/27 12:16:50 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	main(int argc, char **argv)
 		if (!philos)
 			return (1);
 		start_simulation(&data, philos);
-		cleanup(&data, &philos);
+		cleanup(&data, philos);
 	}
 	else
 		error_and_exit("Missing argument, try again");

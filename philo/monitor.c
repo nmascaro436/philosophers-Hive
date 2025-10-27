@@ -6,13 +6,13 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:58:41 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/27 11:37:04 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/27 12:18:07 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	is_simulation_over(t_simulation *data)
+int	is_simulation_over(t_simulation *data)
 {
 	int val;
 
@@ -22,7 +22,7 @@ static int	is_simulation_over(t_simulation *data)
 	return (val);
 }
 
-static void	set_stop_flag(t_simulation *data, int value)
+void	set_stop_flag(t_simulation *data, int value)
 {
 	pthread_mutex_lock(&data->mutex_stop_simulation);
 	data->stop_simulation = value;
