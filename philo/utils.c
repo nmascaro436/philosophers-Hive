@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 10:38:36 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/27 10:52:45 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/28 15:52:43 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	cleanup(t_simulation *data, t_philo *philos)
 	while (i < data->philos_num)
 	{
 		pthread_mutex_destroy(&data->fork[i]);
+		pthread_mutex_destroy(&data->mutex_meal_times);
 		i++;
 	}
 	pthread_mutex_destroy(&data->mutex_print);
@@ -76,5 +77,6 @@ t_philo	*init_structs(t_simulation *data)
 	pthread_mutex_init(&data->mutex_print, NULL); // ensures only one thread prints at a time, no overlap
 	data->stop_simulation = 0;
 	pthread_mutex_init(&data->mutex_stop_simulation, NULL);
+	pthread_mutex_init(&data->mutex_meal_times, NULL);
 	return (philos);
 }

@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:58:41 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/27 12:18:07 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/28 10:02:35 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	*monitor_routine(void *arg)
 		while (i < data->philos_num)
 		{
 			time = time_since_start(data) - philo[i].time_of_last_eat; // time since last meal
-			if (time > data->time_to_die) // if starved
+			if (time >= data->time_to_die) // if starved
 			{
 				pthread_mutex_lock(&data->mutex_print);
 				printf("%ld %d died\n", time_since_start(data), philo[i].id);
@@ -69,7 +69,7 @@ void	*monitor_routine(void *arg)
 		}
 		if (data->must_eat_count != -1 && philos_ate_enough(philo, data)) // if must eat count is set and all ate enough
 			set_stop_flag(data, 1);
-		usleep(1000); // sleep for 1 millisecond after each full check of all philos so we dont over book CPU
+		usleep(500); // sleep for 1 millisecond after each full check of all philos so we dont over book CPU
 	}
 	return (NULL);
 }

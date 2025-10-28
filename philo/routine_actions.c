@@ -6,11 +6,25 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 11:37:14 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/27 12:18:57 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/28 16:10:16 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	safe_printing_actions(t_philo *philo, const char *str)
+{
+	pthread_mutex_lock(&philo->data->mutex_stop_simulation);
+	if (philo->data->stop_simulation)
+	{
+		pthread_mutex_unlock(&philo->data->mutex_stop_simulation);
+		return ;
+	}
+	pthread_mutex_lock(&philo->data->mutex_print);
+	printf("%ld %d %s\n", time_since_start(philo->data), philo->id, str);
+	pthread_mutex_unlock(&philo->data->mutex_print);
+	pthread_mutex_unlock(&philo->data->mutex_stop_simulation);
+}
 
 void	think(t_philo *philo)
 {
