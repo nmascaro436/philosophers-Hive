@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:58:41 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/28 10:02:35 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/28 16:38:34 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,10 @@ void	*monitor_routine(void *arg)
 		i = 0;
 		while (i < data->philos_num)
 		{
+			pthread_mutex_lock(&philo[i].mutex_meal_times);
 			time = time_since_start(data) - philo[i].time_of_last_eat; // time since last meal
-			if (time >= data->time_to_die) // if starved
+			pthread_mutex_unlock(&philo[i].mutex_meal_times);
+			if (time >= data->time_to_die) // if starved, not using the safe print because it needs to print even while setting the stop flag
 			{
 				pthread_mutex_lock(&data->mutex_print);
 				printf("%ld %d died\n", time_since_start(data), philo[i].id);

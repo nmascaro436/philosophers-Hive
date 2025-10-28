@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 11:37:49 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/28 15:51:34 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/28 16:36:29 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ typedef struct s_simulation
 	pthread_mutex_t	mutex_print; //mutex to avoid overlapping output messages
 	int	stop_simulation; // a philo dies or all are full
 	pthread_mutex_t mutex_stop_simulation; // to avoid monitor wanting to write 1 at the same time as philo routine is reading the stop_simulation
-	pthread_mutex_t mutex_meal_times;
 }	t_simulation;
 
 typedef struct s_philo
@@ -43,6 +42,7 @@ typedef struct s_philo
 	long	time_of_last_eat;
 	int times_eaten;
 	t_simulation *data;
+	pthread_mutex_t mutex_meal_times;
 }	t_philo;
 
 void	validate_input(t_simulation *data, char **argv);

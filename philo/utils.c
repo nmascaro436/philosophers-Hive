@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 10:38:36 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/28 15:52:43 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/28 16:39:22 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	cleanup(t_simulation *data, t_philo *philos)
 	while (i < data->philos_num)
 	{
 		pthread_mutex_destroy(&data->fork[i]);
-		pthread_mutex_destroy(&data->mutex_meal_times);
+		pthread_mutex_destroy(&philos[i].mutex_meal_times);
 		i++;
 	}
 	pthread_mutex_destroy(&data->mutex_print);

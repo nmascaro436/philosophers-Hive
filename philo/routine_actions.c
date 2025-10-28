@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 11:37:14 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/28 16:10:16 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/28 16:37:44 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,7 @@ void	safe_printing_actions(t_philo *philo, const char *str)
 
 void	think(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->mutex_print);
-	printf("%ld %d is thinking\n", time_since_start(philo->data), philo->id);
-	pthread_mutex_unlock(&philo->data->mutex_print);
+	safe_printing_actions(philo, "is thinking");
 }
 
 void	take_forks(t_philo *philo)
@@ -38,33 +36,25 @@ void	take_forks(t_philo *philo)
 	if (philo->id % 2 == 0) //even
 	{
 		pthread_mutex_lock(philo->left_fork);
-		pthread_mutex_lock(&philo->data->mutex_print);
-		printf("%ld %d has taken a fork\n", time_since_start(philo->data), philo->id);
-		pthread_mutex_unlock(&philo->data->mutex_print);
+		safe_printing_actions(philo, "has taken a fork");
 		pthread_mutex_lock(philo->right_fork);
-		pthread_mutex_lock(&philo->data->mutex_print);
-		printf("%ld %d has taken a fork\n", time_since_start(philo->data), philo->id);
-		pthread_mutex_unlock(&philo->data->mutex_print);
+		safe_printing_actions(philo, "has taken a fork");
 	}
 	else
 	{
 		pthread_mutex_lock(philo->right_fork);
-		pthread_mutex_lock(&philo->data->mutex_print);
-		printf("%ld %d has taken a fork\n", time_since_start(philo->data), philo->id);
-		pthread_mutex_unlock(&philo->data->mutex_print);
+		safe_printing_actions(philo, "has taken a fork");
 		pthread_mutex_lock(philo->left_fork);
-		pthread_mutex_lock(&philo->data->mutex_print);
-		printf("%ld %d has taken a fork\n", time_since_start(philo->data), philo->id);
-		pthread_mutex_unlock(&philo->data->mutex_print);
+		safe_printing_actions(philo, "has taken a fork");
 	}
 }
 
 void	eat(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->mutex_print);
-	printf("%ld %d is eating\n", time_since_start(philo->data), philo->id);
-	pthread_mutex_unlock(&philo->data->mutex_print);
+	safe_printing_actions(philo, "is eating");
+	pthread_mutex_lock(&philo->mutex_meal_times);
 	philo->time_of_last_eat = time_since_start(philo->data);
+	pthread_mutex_unlock(&philo->mutex_meal_times);
 	philo->times_eaten++;
 	usleep(philo->data->time_to_eat * 1000);
 }
@@ -77,8 +67,6 @@ void	leave_forks(t_philo *philo)
 
 void	sleep_philo(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->mutex_print);
-	printf("%ld %d is sleeping\n", time_since_start(philo->data), philo->id);
-	pthread_mutex_unlock(&philo->data->mutex_print);
+	safe_printing_actions(philo, "is sleeping");
 	usleep(philo->data->time_to_sleep * 1000);
 }
