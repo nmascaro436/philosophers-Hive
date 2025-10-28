@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 10:38:36 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/28 16:39:22 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/28 16:43:17 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,11 @@ t_philo	*init_structs(t_simulation *data)
 		philos[i].time_of_last_eat = data->starting_time;
 		philos[i].times_eaten = 0;
 		philos[i].data = data;
+		pthread_mutex_init(&philos[i].mutex_meal_times, NULL);
 		i++;
 	}
 	pthread_mutex_init(&data->mutex_print, NULL); // ensures only one thread prints at a time, no overlap
 	data->stop_simulation = 0;
 	pthread_mutex_init(&data->mutex_stop_simulation, NULL);
-	pthread_mutex_init(&data->mutex_meal_times, NULL);
 	return (philos);
 }
