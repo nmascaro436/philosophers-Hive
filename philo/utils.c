@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 10:38:36 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/28 16:43:17 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/29 14:55:21 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ t_philo	*init_structs(t_simulation *data)
 		philos[i].id = i + 1; // we start from philo number 1
 		philos[i].left_fork = &data->fork[i]; // the one that matches their index
 		philos[i].right_fork = &data->fork[(i + 1) % data->philos_num]; // we use modulo so the last one can get the fork of the first philo (p.ex: 4 % 4 is 0)
-		philos[i].time_of_last_eat = data->starting_time;
+		philos[i].time_of_last_eat = 0;
 		philos[i].times_eaten = 0;
 		philos[i].data = data;
 		pthread_mutex_init(&philos[i].mutex_meal_times, NULL);

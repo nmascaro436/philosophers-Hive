@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 11:37:14 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/28 16:37:44 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/29 15:03:29 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 void	safe_printing_actions(t_philo *philo, const char *str)
 {
-	pthread_mutex_lock(&philo->data->mutex_stop_simulation);
-	if (philo->data->stop_simulation)
+	pthread_mutex_lock(&philo->data->mutex_stop_simulation); // protect the variable 
+	if (philo->data->stop_simulation) // if someone died or everyone finished eating
 	{
 		pthread_mutex_unlock(&philo->data->mutex_stop_simulation);
-		return ;
+		return ; // exit so no more prints happen
 	}
-	pthread_mutex_lock(&philo->data->mutex_print);
+	pthread_mutex_lock(&philo->data->mutex_print);  // simulation not over so we can print
 	printf("%ld %d %s\n", time_since_start(philo->data), philo->id, str);
 	pthread_mutex_unlock(&philo->data->mutex_print);
 	pthread_mutex_unlock(&philo->data->mutex_stop_simulation);
@@ -28,7 +28,8 @@ void	safe_printing_actions(t_philo *philo, const char *str)
 
 void	think(t_philo *philo)
 {
-	safe_printing_actions(philo, "is thinking");
+	if (!is_simulation_over(philo->data))
+		safe_printing_actions(philo, "is thinking");
 }
 
 void	take_forks(t_philo *philo)
@@ -36,27 +37,56 @@ void	take_forks(t_philo *philo)
 	if (philo->id % 2 == 0) //even
 	{
 		pthread_mutex_lock(philo->left_fork);
+		if (is_simulation_over(philo->data))
+		{
+			pthread_mutex_unlock(philo->left_fork);
+			return ;
+		}
 		safe_printing_actions(philo, "has taken a fork");
 		pthread_mutex_lock(philo->right_fork);
+		if (is_simulation_over(philo->data))
+		{
+			pthread_mutex_unlock(philo->right_fork);
+			pthread_mutex_unlock(philo->left_fork);
+			return ;
+		}
 		safe_printing_actions(philo, "has taken a fork");
 	}
 	else
 	{
 		pthread_mutex_lock(philo->right_fork);
+		if (is_simulation_over(philo->data))
+		{
+			pthread_mutex_unlock(philo->right_fork);
+			return ;
+		}
 		safe_printing_actions(philo, "has taken a fork");
 		pthread_mutex_lock(philo->left_fork);
+		if (is_simulation_over(philo->data))
+		{
+			pthread_mutex_unlock(philo->left_fork);
+			pthread_mutex_unlock(philo->right_fork);
+			return ;
+		}
 		safe_printing_actions(philo, "has taken a fork");
 	}
 }
 
 void	eat(t_philo *philo)
 {
+	long	start_action;
+	
+	if (is_simulation_over(philo->data))
+		return ;
 	safe_printing_actions(philo, "is eating");
+	start_action = time_since_start(philo->data); // when philo started eating
 	pthread_mutex_lock(&philo->mutex_meal_times);
-	philo->time_of_last_eat = time_since_start(philo->data);
-	pthread_mutex_unlock(&philo->mutex_meal_times);
+	philo->time_of_last_eat = start_action;
 	philo->times_eaten++;
-	usleep(philo->data->time_to_eat * 1000);
+	pthread_mutex_unlock(&philo->mutex_meal_times);
+	while (!is_simulation_over(philo->data) 
+		&& (time_since_start(philo->data) - start_action) < philo->data->time_to_eat)// checks frequently whether the simulation stopped or the time to eat is done
+		usleep(500);
 }
 
 void	leave_forks(t_philo *philo)
@@ -67,6 +97,13 @@ void	leave_forks(t_philo *philo)
 
 void	sleep_philo(t_philo *philo)
 {
+	long start_action;
+
+	if (is_simulation_over(philo->data))
+		return ;
 	safe_printing_actions(philo, "is sleeping");
-	usleep(philo->data->time_to_sleep * 1000);
+	start_action = time_since_start(philo->data);
+	while (!is_simulation_over(philo->data) 
+		&& (time_since_start(philo->data) - start_action) < philo->data->time_to_sleep)
+		usleep(500); // sleep in chunks to let the monitor thread check for starving
 }
