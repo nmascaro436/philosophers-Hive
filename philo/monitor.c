@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:58:41 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/29 15:17:46 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/30 16:05:41 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,15 @@ void	set_stop_flag(t_simulation *data, int value) // writes to the flag
 static int	philos_ate_enough(t_philo *philo, t_simulation *data)
 {
 	int i;
+	int	times_eaten;
 
 	i = 0;
 	while (i < data->philos_num)
 	{
-		if (philo[i].times_eaten < data->must_eat_count)
+		pthread_mutex_lock(&philo[i].mutex_meal_times);
+		times_eaten = philo[i].times_eaten;
+		pthread_mutex_unlock(&philo[i].mutex_meal_times);
+		if (times_eaten < data->must_eat_count)
 			return (0); // at least one didnt eat enough
 		i++;
 	}
@@ -46,7 +50,7 @@ void	*monitor_routine(void *arg)
 {
 	t_philo *philo;
 	int i;
-	long	current_time;
+	//long	current_time;
 	long	since_last_meal;
 	t_simulation *data;
 	
@@ -57,15 +61,15 @@ void	*monitor_routine(void *arg)
 		i = 0;
 		while (i < data->philos_num)
 		{
-			current_time = time_since_start(data);
+			//current_time = time_since_start(data);
 			pthread_mutex_lock(&philo[i].mutex_meal_times);
-			since_last_meal = current_time - philo[i].time_of_last_eat; // time since last meal
+			since_last_meal = time_since_start(data) - philo[i].time_of_last_eat; // time since last meal
 			pthread_mutex_unlock(&philo[i].mutex_meal_times);
-			if (since_last_meal >= data->time_to_die) // if starved, not using the safe print because it's the one that needs to set the flag
+			if (since_last_meal > data->time_to_die) // if starved, not using the safe print because it's the one that needs to set the flag
 			{
 				set_stop_flag(data, 1);
 				pthread_mutex_lock(&data->mutex_print);
-				printf("%ld %d died\n", current_time, philo[i].id);
+				printf("%ld %d died\n", time_since_start(data), philo[i].id);
 				pthread_mutex_unlock(&data->mutex_print);
 				return (NULL);
 			}
@@ -73,7 +77,7 @@ void	*monitor_routine(void *arg)
 		}
 		if (data->must_eat_count != -1 && philos_ate_enough(philo, data)) // if must eat count is set and all ate enough
 			set_stop_flag(data, 1);
-		usleep(500); // sleep for 1 millisecond after each full check of all philos so we dont over book CPU
+		usleep(100); // sleep after each full check of all philos so we dont over book CPU
 	}
 	return (NULL);
 }

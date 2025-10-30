@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:56:54 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/29 15:23:02 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/30 16:24:14 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,20 +32,27 @@ static void	*philo_life_routine(void *arg)
 	t_philo *philo;
 	
 	philo = (t_philo *)arg;
+	//pthread_mutex_lock(&philo->mutex_meal_times);
+	//philo->time_of_last_eat = time_since_start(philo->data); // when each philo starts we say that this was their last meal time, their life starts now
+	//pthread_mutex_unlock(&philo->mutex_meal_times);
 	if (philo->data->philos_num == 1)
 	{
 		lonely_philo(philo);
 		return (NULL);
 	}
-	if (philo->id % 2 == 0)
-		usleep(philo->data->time_to_eat * 1000); // way to make the start smoother and to avoid all philos starting at the same time
+	usleep(philo->id * 100);
+	//if (philo->id % 2 == 0)
+		//usleep(100); // way to make the start smoother and to avoid all philos starting at the same time
 	while (!is_simulation_over(philo->data) && (philo->data->must_eat_count == -1 // no limit set 
 		|| philo->times_eaten < philo->data->must_eat_count))
 	{
 		think(philo);
 		take_forks(philo);
 		if (is_simulation_over(philo->data))
-			break;
+		{
+			//leave_forks(philo);
+			break ;
+		}
 		eat(philo);
 		leave_forks(philo);
 		sleep_philo(philo);
@@ -61,17 +68,16 @@ void	start_simulation(t_simulation *data, t_philo *philo)
 	int i;
 	pthread_t *philo_thr;
 	pthread_t monitor;
-	struct	timeval tv; // stores seconds (since Jan 1 1970) and microseconds (1 second = 1.000.000 microsec)
 
-	i = 0;
+	
 	philo_thr = malloc(sizeof(pthread_t) * data->philos_num);
 	if (!philo_thr)
 		return ;
-	gettimeofday(&tv, NULL); // fills struct with current system time
-	data->starting_time = tv.tv_sec * 1000 + tv.tv_usec / 1000; // converts to milliseconds both numbers
+	i = 0;
 	while (i < data->philos_num)
 	{
 		pthread_create(&philo_thr[i], NULL, philo_life_routine, &philo[i]);
+		usleep(1000);
 		i++;
 	}
 	pthread_create(&monitor, NULL, monitor_routine, philo);

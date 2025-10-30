@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 12:41:23 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/29 15:06:05 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/30 09:28:00 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ int	main(int argc, char **argv)
 	if (argc == 5 || argc == 6)
 	{
 		validate_input(&data, argv);
-		
 		philos = init_structs(&data);
 		if (!philos)
 			return (1);
