@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 11:37:14 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/30 16:24:05 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/31 14:22:07 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,28 @@ void	safe_printing_actions(t_philo *philo, const char *str)
 
 void	think(t_philo *philo)
 {
-	if (!is_simulation_over(philo->data))
-		safe_printing_actions(philo, "is thinking");
+	long think_time;
+	long safe_time_before_death;
+	long time_since_meal;
+	long remaining;
+	
+	if (is_simulation_over(philo->data))
+		return ;
+	safe_printing_actions(philo, "is thinking");
+	pthread_mutex_lock(&philo->mutex_meal_times);
+	time_since_meal = time_since_start(philo->data) - philo->time_of_last_eat;
+	pthread_mutex_unlock(&philo->mutex_meal_times);
+	safe_time_before_death = philo->data->time_to_die - (philo->data->time_to_eat
+	+ philo->data->time_to_sleep);
+	think_time = 0;
+	if (safe_time_before_death > 0)
+	{
+		remaining = philo->data->time_to_die - time_since_meal;
+		if (remaining > safe_time_before_death / 2)
+			think_time = safe_time_before_death / 2;
+	}
+	if (think_time > 0)
+		usleep (think_time * 1000);
 }
 
 void	take_forks(t_philo *philo)
@@ -60,17 +80,16 @@ void	eat(t_philo *philo)
 	
 	if (is_simulation_over(philo->data))
 		return ;
-	start_action = time_since_start(philo->data); // when philo started eating
 	pthread_mutex_lock(&philo->mutex_meal_times);
-	philo->time_of_last_eat = start_action;
+	philo->time_of_last_eat = time_since_start(philo->data);
 	philo->times_eaten++;
 	pthread_mutex_unlock(&philo->mutex_meal_times);
 	safe_printing_actions(philo, "is eating");
+	start_action = time_since_start(philo->data); // when philo started eating
 	while (!is_simulation_over(philo->data) 
 		&& (time_since_start(philo->data) - start_action) < philo->data->time_to_eat)// checks frequently whether the simulation stopped or the time to eat is done
 		usleep(500);
 }
-
 
 void	leave_forks(t_philo *philo)
 {

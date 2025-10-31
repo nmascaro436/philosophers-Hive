@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:56:54 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/30 16:24:14 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/10/31 14:28:11 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ static void	*philo_life_routine(void *arg)
 		lonely_philo(philo);
 		return (NULL);
 	}
-	usleep(philo->id * 100);
-	//if (philo->id % 2 == 0)
-		//usleep(100); // way to make the start smoother and to avoid all philos starting at the same time
+	//usleep(philo->id * 100);
+	if (philo->id % 2 != 0)
+		usleep(philo->data->time_to_eat / 2 * 1000); // way to make the start smoother and to avoid all philos starting at the same time
 	while (!is_simulation_over(philo->data) && (philo->data->must_eat_count == -1 // no limit set 
 		|| philo->times_eaten < philo->data->must_eat_count))
 	{
@@ -50,7 +50,7 @@ static void	*philo_life_routine(void *arg)
 		take_forks(philo);
 		if (is_simulation_over(philo->data))
 		{
-			//leave_forks(philo);
+			leave_forks(philo);
 			break ;
 		}
 		eat(philo);
@@ -76,8 +76,15 @@ void	start_simulation(t_simulation *data, t_philo *philo)
 	i = 0;
 	while (i < data->philos_num)
 	{
+		pthread_mutex_lock(&philo[i].mutex_meal_times);
+		philo[i].time_of_last_eat = 0; // All start at time 0
+		pthread_mutex_unlock(&philo[i].mutex_meal_times);
+		i++;
+	}
+	i = 0;
+	while (i < data->philos_num)
+	{
 		pthread_create(&philo_thr[i], NULL, philo_life_routine, &philo[i]);
-		usleep(1000);
 		i++;
 	}
 	pthread_create(&monitor, NULL, monitor_routine, philo);
