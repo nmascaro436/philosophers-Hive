@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 12:41:23 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/30 09:28:00 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/03 10:01:43 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,21 @@ int	main(int argc, char **argv)
 	t_simulation data;
 	t_philo *philos;
 
-	if (argc == 5 || argc == 6)
+	if (argc != 5 && argc != 6)
 	{
-		validate_input(&data, argv);
-		philos = init_structs(&data);
-		if (!philos)
-			return (1);
-		start_simulation(&data, philos);
-		cleanup(&data, philos);
+		printf("Wrong number of arguments, try again\n");
+		return (1);
 	}
-	else
-		error_and_exit("Missing argument, try again");
+	if (!validate_input(&data, argv))
+		return (1);
+	philos = init_structs(&data);
+	if (!philos)
+		return (1);
+	if (!start_simulation(&data, philos))
+	{
+		cleanup(&data, philos);
+		return (1);
+	}
+	cleanup(&data, philos);
 	return (0);
 }

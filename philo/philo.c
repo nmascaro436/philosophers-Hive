@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:56:54 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/31 14:28:11 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/03 10:01:57 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,11 @@ static void	*philo_life_routine(void *arg)
 	t_philo *philo;
 	
 	philo = (t_philo *)arg;
-	//pthread_mutex_lock(&philo->mutex_meal_times);
-	//philo->time_of_last_eat = time_since_start(philo->data); // when each philo starts we say that this was their last meal time, their life starts now
-	//pthread_mutex_unlock(&philo->mutex_meal_times);
 	if (philo->data->philos_num == 1)
 	{
 		lonely_philo(philo);
 		return (NULL);
 	}
-	//usleep(philo->id * 100);
 	if (philo->id % 2 != 0)
 		usleep(philo->data->time_to_eat / 2 * 1000); // way to make the start smoother and to avoid all philos starting at the same time
 	while (!is_simulation_over(philo->data) && (philo->data->must_eat_count == -1 // no limit set 
@@ -59,20 +55,33 @@ static void	*philo_life_routine(void *arg)
 	}
 	return (NULL);
 }
+static void	join_threads(pthread_t *philo, int count, pthread_t *monit, int monit_cr)
+{
+	int	i;
+
+	i = 0;
+	while(i < count)
+	{
+		pthread_join(philo[i], NULL);
+		i++;
+	}
+	if (monit_cr)
+		pthread_join(*monit, NULL);
+}
 
 // create thread for each philo -> each thread runs the philo_life_routine function
 // start the monitoring -> separate thread that keeps checking time of last eat for each philo
 // wait for threads to finish (pthread join) -> ends when a philo dies or all philos have eaten the required times
-void	start_simulation(t_simulation *data, t_philo *philo)
+int	start_simulation(t_simulation *data, t_philo *philo)
 {
 	int i;
 	pthread_t *philo_thr;
 	pthread_t monitor;
+	int created_count;
 
-	
 	philo_thr = malloc(sizeof(pthread_t) * data->philos_num);
 	if (!philo_thr)
-		return ;
+		return (0);
 	i = 0;
 	while (i < data->philos_num)
 	{
@@ -81,19 +90,25 @@ void	start_simulation(t_simulation *data, t_philo *philo)
 		pthread_mutex_unlock(&philo[i].mutex_meal_times);
 		i++;
 	}
-	i = 0;
-	while (i < data->philos_num)
+	created_count = 0;
+	while (created_count < data->philos_num)
 	{
-		pthread_create(&philo_thr[i], NULL, philo_life_routine, &philo[i]);
-		i++;
+		if (pthread_create(&philo_thr[created_count], NULL, philo_life_routine, &philo[created_count]) != 0)
+		{
+			set_stop_flag(data, 1);
+			join_threads(philo_thr, created_count, NULL, 0);
+			return (0);
+		}
+		created_count++;
 	}
-	pthread_create(&monitor, NULL, monitor_routine, philo);
-	i = 0;
-	while (i < data->philos_num)
+	if (pthread_create(&monitor, NULL, monitor_routine, philo) != 0)
 	{
-		pthread_join(philo_thr[i], NULL); // waits until philo thread i finishes
-		i++;
+		set_stop_flag(data, 1);
+		join_threads(philo_thr, created_count, NULL, 0);
+		free(philo_thr);
+		return (0);
 	}
-	pthread_join(monitor, NULL);
+	join_threads(philo_thr, created_count, &monitor, 1);
 	free(philo_thr);
+	return (1);
 }

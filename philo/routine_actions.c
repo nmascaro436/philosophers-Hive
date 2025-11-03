@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 11:37:14 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/31 14:22:07 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/03 09:58:25 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,6 @@ void	take_forks(t_philo *philo)
 		pthread_mutex_lock(philo->right_fork);
 		safe_printing_actions(philo, "has taken a fork");
 	}
-	//pthread_mutex_lock(&philo->mutex_meal_times);
-	//philo->time_of_last_eat = time_since_start(philo->data);
-	//pthread_mutex_unlock(&philo->mutex_meal_times);
 }
 
 void	eat(t_philo *philo)
@@ -117,4 +114,3 @@ void	sleep_philo(t_philo *philo)
 		&& (time_since_start(philo->data) - start_action) < philo->data->time_to_sleep)
 		usleep(500); // sleep in chunks to let the monitor thread check for starving
 }
-

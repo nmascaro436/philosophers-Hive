@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 11:37:49 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/30 14:26:47 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/03 09:55:17 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,12 @@ typedef struct s_philo
 	pthread_mutex_t mutex_meal_times;
 }	t_philo;
 
-void	validate_input(t_simulation *data, char **argv);
+int	validate_input(t_simulation *data, char **argv);
 void	*monitor_routine(void *arg);
-void	start_simulation(t_simulation *data, t_philo *philo);
+int		start_simulation(t_simulation *data, t_philo *philo);
 t_philo	*init_structs(t_simulation *data);
 long	time_since_start(t_simulation *data);
 void	cleanup(t_simulation *data, t_philo *philos);
-void	error_and_exit(const char *message);
 void	think(t_philo *philo);
 void	take_forks(t_philo *philo);
 void	eat(t_philo *philo);

@@ -6,17 +6,11 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 10:38:36 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/31 14:23:55 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/03 10:01:12 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	error_and_exit(const char *message)
-{
-	printf("%s\n", message);
-	exit (EXIT_FAILURE); // REMOVEEEEE, exit not allowed
-}
 
 void	cleanup(t_simulation *data, t_philo *philos)
 {
@@ -64,6 +58,12 @@ t_philo	*init_structs(t_simulation *data)
 	philos = malloc(sizeof(t_philo) * data->philos_num);
 	if (!philos)
 	{
+		i = 0;
+		while (i < data->philos_num)
+		{
+			pthread_mutex_destroy(&data->fork[i]);
+			i++;
+		}
 		free(data->fork);
 		return (NULL);
 	}
@@ -73,7 +73,6 @@ t_philo	*init_structs(t_simulation *data)
 		philos[i].id = i + 1; // we start from philo number 1
 		philos[i].left_fork = &data->fork[i]; // the one that matches their index
 		philos[i].right_fork = &data->fork[(i + 1) % data->philos_num]; // we use modulo so the last one can get the fork of the first philo (p.ex: 4 % 4 is 0)
-		//philos[i].time_of_last_eat = data->starting_time;
 		philos[i].time_of_last_eat = 0;
 		philos[i].times_eaten = 0;
 		philos[i].data = data;

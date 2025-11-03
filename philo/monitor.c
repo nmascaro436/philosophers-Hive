@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:58:41 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/10/30 16:05:41 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/03 09:47:46 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ void	*monitor_routine(void *arg)
 {
 	t_philo *philo;
 	int i;
-	//long	current_time;
 	long	since_last_meal;
 	t_simulation *data;
 	
@@ -61,7 +60,6 @@ void	*monitor_routine(void *arg)
 		i = 0;
 		while (i < data->philos_num)
 		{
-			//current_time = time_since_start(data);
 			pthread_mutex_lock(&philo[i].mutex_meal_times);
 			since_last_meal = time_since_start(data) - philo[i].time_of_last_eat; // time since last meal
 			pthread_mutex_unlock(&philo[i].mutex_meal_times);
