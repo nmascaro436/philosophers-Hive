@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:58:41 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/03 09:47:46 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/03 14:29:28 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	set_stop_flag(t_simulation *data, int value) // writes to the flag
 	data->stop_simulation = value;
 	pthread_mutex_unlock(&data->mutex_stop_simulation);
 }
+
 static int	philos_ate_enough(t_philo *philo, t_simulation *data)
 {
 	int i;

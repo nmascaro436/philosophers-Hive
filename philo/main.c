@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 12:41:23 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/03 10:01:43 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/03 14:16:53 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	main(int argc, char **argv)
 		return (1);
 	if (!start_simulation(&data, philos))
 	{
-		cleanup(&data, philos);
+		cleanup(&data, philos); // if thread creation failed cleanup what was allocated before failing
 		return (1);
 	}
 	cleanup(&data, philos);

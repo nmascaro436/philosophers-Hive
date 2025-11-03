@@ -6,14 +6,11 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 10:29:08 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/03 09:42:45 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/03 13:14:27 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-// input is something like ./philo 5(number of philos), 800(time to die), 200(time to eat), 200(time to sleep), 
-// 5[number of times philo must eat]
 
 static long	ft_atol(const char *str)
 {
@@ -51,10 +48,10 @@ static int	get_valid_arg(char *str)
 {
 	long value;
 
-	value = ft_atol(str);
+	value = ft_atol(str); // convert string to integer
 	if (value == 0 || value > INT_MAX)
 		return (-1);
-	return ((int)value);
+	return ((int)value); // we already checked for overflow so we cast it to int
 }
 static int	parse_and_store_arg(int *dest, char *arg, const char *message)
 {
@@ -69,6 +66,8 @@ static int	parse_and_store_arg(int *dest, char *arg, const char *message)
 	*dest = value;
 	return (1);
 }
+
+//returns 0 if invalid and 1 if valid
 int	validate_input(t_simulation *data, char **argv)
 {
 	int	i;
@@ -97,6 +96,6 @@ int	validate_input(t_simulation *data, char **argv)
 			return (0);
 	}
 	else
-		data->must_eat_count = -1;
+		data->must_eat_count = -1; // meal count not set so run until someone dies
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 11:37:49 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/03 09:55:17 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/03 11:59:32 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@
 typedef struct s_simulation
 {
 	int	philos_num;
-	int	time_to_die; //milliseconds
-	int	time_to_eat; // milliseconds
-	int	time_to_sleep; // milliseconds
+	int	time_to_die;
+	int	time_to_eat;
+	int	time_to_sleep;
 	int	must_eat_count; //optional argument, if not specified, simulation stops when a philo dies
-	long	starting_time; // milliseconds
-	pthread_mutex_t	*fork; //array of mutexes
+	long	starting_time;
+	pthread_mutex_t	*fork; //array of mutexes (shared resources), one for fork
 	pthread_mutex_t	mutex_print; //mutex to avoid overlapping output messages
 	int	stop_simulation; // a philo dies or all are full
 	pthread_mutex_t mutex_stop_simulation; // to avoid monitor wanting to write 1 at the same time as philo routine is reading the stop_simulation
@@ -39,10 +39,10 @@ typedef struct s_philo
 	int	id;
 	pthread_mutex_t *left_fork;
 	pthread_mutex_t	*right_fork;
-	long	time_of_last_eat;
+	long	time_of_last_eat; //used by monitor to detect starving
 	int times_eaten;
 	t_simulation *data;
-	pthread_mutex_t mutex_meal_times;
+	pthread_mutex_t mutex_meal_times; //to avoid monitor reading time_of_last_eat and times_eaten at the same time as philo is writing
 }	t_philo;
 
 int	validate_input(t_simulation *data, char **argv);

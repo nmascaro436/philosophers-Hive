@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 11:37:14 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/03 09:58:25 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/03 14:34:07 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,10 @@
 
 void	safe_printing_actions(t_philo *philo, const char *str)
 {
-	pthread_mutex_lock(&philo->data->mutex_stop_simulation); // protect the variable 
-	if (philo->data->stop_simulation) // if someone died or everyone finished eating
-	{
-		pthread_mutex_unlock(&philo->data->mutex_stop_simulation);
-		return ; // exit so no more prints happen
-	}
-	pthread_mutex_unlock(&philo->data->mutex_stop_simulation);
-	pthread_mutex_lock(&philo->data->mutex_print);  // simulation not over so we can print
-	printf("%ld %d %s\n", time_since_start(philo->data), philo->id, str);
+	pthread_mutex_lock(&philo->data->mutex_print);
+	if (!philo->data->stop_simulation)
+		printf("%ld %d %s\n", time_since_start(philo->data), philo->id, str);
 	pthread_mutex_unlock(&philo->data->mutex_print);
-
 }
 
 void	think(t_philo *philo)

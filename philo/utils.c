@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 10:38:36 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/03 10:01:12 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/03 13:37:36 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ t_philo	*init_structs(t_simulation *data)
 		i++;
 	}
 	philos = malloc(sizeof(t_philo) * data->philos_num);
-	if (!philos)
+	if (!philos) // destroy mutex we initialized if philo allocation fails
 	{
 		i = 0;
 		while (i < data->philos_num)
@@ -64,7 +64,7 @@ t_philo	*init_structs(t_simulation *data)
 			pthread_mutex_destroy(&data->fork[i]);
 			i++;
 		}
-		free(data->fork);
+		free(data->fork); //free array
 		return (NULL);
 	}
 	i = 0;
