@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:56:54 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/03 14:21:03 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/04 11:27:06 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,17 @@ int	start_simulation(t_simulation *data, t_philo *philo)
 		philo[i].time_of_last_eat = 0; // All start at time 0, now relative to starting time that we set before
 		pthread_mutex_unlock(&philo[i].mutex_meal_times);
 		i++;
+	}
+	if (data->philos_num == 1)
+	{
+		if (pthread_create(&philo_thr[0], NULL, philo_life_routine, &philo[0]) != 0)
+		{
+			free(philo_thr);
+			return (0);
+		}
+		pthread_join(philo_thr[0], NULL);
+		free(philo_thr);
+		return (1);
 	}
 	created_count = 0;
 	while (created_count < data->philos_num)
