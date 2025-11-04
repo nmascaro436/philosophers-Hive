@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:56:54 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/04 12:48:12 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/04 15:20:12 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,6 @@
 
 static	void	lonely_philo(t_philo *philo)
 {
-	/*
-	pthread_mutex_lock(philo->left_fork); // lock the only fork
-	pthread_mutex_lock(&philo->data->mutex_print);
-	printf("%ld %d has taken a fork\n", time_since_start(philo->data), philo->id);
-	pthread_mutex_unlock(&philo->data->mutex_print);
-	usleep(philo->data->time_to_die * 1000); // cant eat so we wait until it starves, usleep uses microseconds so we make it to milliseconds
-	pthread_mutex_lock(&philo->data->mutex_print);
-	printf("%ld %d died\n", time_since_start(philo->data), philo->id);
-	pthread_mutex_unlock(&philo->data->mutex_print);
-	set_stop_flag(philo->data, 1);
-	pthread_mutex_unlock(philo->left_fork);
-	*/
 	pthread_mutex_lock(philo->left_fork);
 	safe_printing_actions(philo, "has taken a fork");
 	usleep(philo->data->time_to_die * 1000);
@@ -36,8 +24,8 @@ static	void	lonely_philo(t_philo *philo)
 // it takes void argument because it's what is expected by pthread create
 void	*philo_life_routine(void *arg)
 {
-	t_philo *philo;
-	
+	t_philo	*philo;
+
 	philo = (t_philo *)arg;
 	if (philo->data->philos_num == 1)
 	{
@@ -47,7 +35,7 @@ void	*philo_life_routine(void *arg)
 	if (philo->id % 2 != 0) // odd number of philos
 		usleep(philo->data->time_to_eat / 2 * 1000); // wait for half of the eating time(way to make the start smoother and to avoid all philos starting at the same time)
 	while (!is_simulation_over(philo->data) && (philo->data->must_eat_count == -1 // no limit set 
-		|| philo->times_eaten < philo->data->must_eat_count)) // haven't eaten enough yet
+			|| philo->times_eaten < philo->data->must_eat_count)) // haven't eaten enough yet
 	{
 		think(philo);
 		take_forks(philo);
@@ -62,12 +50,13 @@ void	*philo_life_routine(void *arg)
 	}
 	return (NULL);
 }
+
 void	join_threads(pthread_t *philo, int count, pthread_t *monit, int monit_cr)
 {
 	int	i;
 
 	i = 0;
-	while(i < count)
+	while (i < count)
 	{
 		pthread_join(philo[i], NULL); // only wait for threads successfully created
 		i++;
@@ -81,9 +70,9 @@ void	join_threads(pthread_t *philo, int count, pthread_t *monit, int monit_cr)
 // wait for threads to finish (pthread join) -> ends when a philo dies or all philos have eaten the required times
 int	start_simulation(t_simulation *data, t_philo *philo)
 {
-	pthread_t *philo_thr;
-	pthread_t monitor;
-	int created_count;
+	pthread_t	*philo_thr;
+	pthread_t	monitor;
+	int			created_count;
 
 	philo_thr = malloc(sizeof(pthread_t) * data->philos_num);
 	if (!philo_thr)

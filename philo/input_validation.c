@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 10:29:08 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/03 13:14:27 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/04 15:20:46 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,18 +44,20 @@ static int	is_only_positive_digit(char *str)
 	}
 	return (1);
 }
+
 static int	get_valid_arg(char *str)
 {
-	long value;
+	long	value;
 
 	value = ft_atol(str); // convert string to integer
 	if (value == 0 || value > INT_MAX)
 		return (-1);
 	return ((int)value); // we already checked for overflow so we cast it to int
 }
+
 static int	parse_and_store_arg(int *dest, char *arg, const char *message)
 {
-	int value;
+	int	value;
 
 	value = get_valid_arg(arg);
 	if (value == -1)

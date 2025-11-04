@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 10:38:36 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/03 13:37:36 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/04 15:24:19 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	cleanup(t_simulation *data, t_philo *philos)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < data->philos_num)
@@ -28,10 +28,11 @@ void	cleanup(t_simulation *data, t_philo *philos)
 	free(data->fork);
 	free(philos);
 }
+
 long	time_since_start(t_simulation *data)
 {
-	struct timeval time;
-	long	current_time;
+	struct timeval	time;
+	long			current_time;
 
 	gettimeofday(&time, NULL);
 	current_time = time.tv_sec * 1000 + time.tv_usec / 1000;
@@ -40,9 +41,9 @@ long	time_since_start(t_simulation *data)
 
 t_philo	*init_structs(t_simulation *data)
 {
-	t_philo	*philos;
-	int	i;
-	struct timeval time; //stores seconds (since Jan 1 1970) and microseconds (1 second = 1.000.000 microsec)
+	t_philo			*philos;
+	int				i;
+	struct timeval	time;
 
 	gettimeofday(&time, NULL); // fills struct with current system time
 	data->starting_time = time.tv_sec * 1000 + time.tv_usec / 1000; // we get the time before creating any philos

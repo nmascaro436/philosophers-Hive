@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 11:37:14 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/04 13:01:42 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/04 15:25:47 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,18 @@ void	safe_printing_actions(t_philo *philo, const char *str)
 		printf("%ld %d %s\n", time_since_start(philo->data), philo->id, str);
 	pthread_mutex_unlock(&philo->data->mutex_print);
 }
+
 // adapts thinking time depending on how close they are to starving
 //  if there's a lot of philos even if there's a wait time for the odd even numbers, even them
 // may try to take forks at the same time, so then here we smartly decide which one gets to have forks first by not thinking
 // also gives time for others to finish eating and release forks
 void	think(t_philo *philo)
 {
-	long think_time;
-	long safe_time_before_death; // how much time they have before starving
-	long time_since_meal; // when it last ate
-	long remaining; // time remaining before death
-	
+	long	think_time;
+	long	safe_time_before_death; // how much time they have before starving
+	long	time_since_meal; // when it last ate
+	long	remaining; // time remaining before death
+
 	if (is_simulation_over(philo->data))
 		return ;
 	safe_printing_actions(philo, "is thinking");
@@ -37,7 +38,7 @@ void	think(t_philo *philo)
 	time_since_meal = time_since_start(philo->data) - philo->time_of_last_eat;
 	pthread_mutex_unlock(&philo->mutex_meal_times);
 	safe_time_before_death = philo->data->time_to_die - (philo->data->time_to_eat
-	+ philo->data->time_to_sleep);
+			+ philo->data->time_to_sleep);
 	think_time = 0;
 	if (safe_time_before_death > 0) // if there's buffer time, we calculate think time, if not think time stays at 0 (they print is thinking but immediately do something else)
 	{
@@ -70,7 +71,7 @@ void	take_forks(t_philo *philo)
 void	eat(t_philo *philo)
 {
 	long	start_action;
-	
+
 	if (is_simulation_over(philo->data))
 		return ;
 	pthread_mutex_lock(&philo->mutex_meal_times);
@@ -79,7 +80,7 @@ void	eat(t_philo *philo)
 	pthread_mutex_unlock(&philo->mutex_meal_times);
 	safe_printing_actions(philo, "is eating");
 	start_action = time_since_start(philo->data); // moment it began the eating action
-	while (!is_simulation_over(philo->data) 
+	while (!is_simulation_over(philo->data)
 		&& (time_since_start(philo->data) - start_action) < philo->data->time_to_eat)// checks frequently whether the simulation stopped or the time to eat is done
 		usleep(500); 
 }

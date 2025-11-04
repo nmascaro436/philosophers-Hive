@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:58:41 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/04 13:00:31 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/04 15:26:50 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	is_simulation_over(t_simulation *data) // reads the flag to see if the simulation ended 
 {
-	int val;
+	int	val;
 
 	pthread_mutex_lock(&data->mutex_stop_simulation);
 	val = data->stop_simulation;
@@ -31,7 +31,7 @@ void	set_stop_flag(t_simulation *data, int value) // writes to the flag
 
 static int	philos_ate_enough(t_philo *philo, t_simulation *data)
 {
-	int i;
+	int	i;
 	int	times_eaten;
 
 	i = 0;
@@ -46,7 +46,8 @@ static int	philos_ate_enough(t_philo *philo, t_simulation *data)
 	}
 	return (1); // all ate enough
 }
-void announce_death(t_philo *philo)
+
+void	announce_death(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->mutex_print);
 	if (!is_simulation_over(philo->data))
@@ -58,10 +59,10 @@ void announce_death(t_philo *philo)
 }
 void	*monitor_routine(void *arg)
 {
-	t_philo *philo;
-	int i;
-	long	since_last_meal;
-	t_simulation *data;
+	t_philo			*philo;
+	int				i;
+	long			since_last_meal;
+	t_simulation	*data;
 	
 	philo = (t_philo *)arg;
 	data = philo[0].data; // all philos have thee same simulation data, so we use the first one
@@ -75,12 +76,6 @@ void	*monitor_routine(void *arg)
 			pthread_mutex_unlock(&philo[i].mutex_meal_times);
 			if (since_last_meal > data->time_to_die) // if starved, not using the safe print because it's the one that needs to set the flag
 			{
-				/*
-				set_stop_flag(data, 1);
-				pthread_mutex_lock(&data->mutex_print);
-				printf("%ld %d died\n", time_since_start(data), philo[i].id);
-				pthread_mutex_unlock(&data->mutex_print);
-				*/
 				announce_death(&philo[i]);
 				return (NULL);
 			}

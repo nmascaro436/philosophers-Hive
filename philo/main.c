@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 12:41:23 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/04 12:27:41 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/04 15:19:02 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	main(int argc, char **argv)
 {
-	t_simulation data;
-	t_philo *philos;
+	t_simulation	data;
+	t_philo			*philos;
 
 	if (argc != 5 && argc != 6)
 	{
