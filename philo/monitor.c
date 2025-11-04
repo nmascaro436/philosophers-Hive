@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:58:41 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/03 14:29:28 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/04 10:30:14 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	is_simulation_over(t_simulation *data) // reads the flag to see if the simul
 	pthread_mutex_lock(&data->mutex_stop_simulation);
 	val = data->stop_simulation;
 	pthread_mutex_unlock(&data->mutex_stop_simulation);
-	return (val);
+	return (val);  // return value we read
 }
 
 void	set_stop_flag(t_simulation *data, int value) // writes to the flag 
@@ -76,7 +76,7 @@ void	*monitor_routine(void *arg)
 		}
 		if (data->must_eat_count != -1 && philos_ate_enough(philo, data)) // if must eat count is set and all ate enough
 			set_stop_flag(data, 1);
-		usleep(100); // sleep after each full check of all philos so we dont over book CPU
+		usleep(100); // sleep after each full check of all philos so we dont over book CPU, but still checks frequently
 	}
 	return (NULL);
 }
