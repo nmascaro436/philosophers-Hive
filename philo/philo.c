@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:56:54 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/04 11:27:06 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/04 12:00:24 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static	void	lonely_philo(t_philo *philo)
 }
 
 // it takes void argument because it's what is expected by pthread create
-static void	*philo_life_routine(void *arg)
+void	*philo_life_routine(void *arg)
 {
 	t_philo *philo;
 	
@@ -55,7 +55,7 @@ static void	*philo_life_routine(void *arg)
 	}
 	return (NULL);
 }
-static void	join_threads(pthread_t *philo, int count, pthread_t *monit, int monit_cr)
+void	join_threads(pthread_t *philo, int count, pthread_t *monit, int monit_cr)
 {
 	int	i;
 
@@ -74,7 +74,6 @@ static void	join_threads(pthread_t *philo, int count, pthread_t *monit, int moni
 // wait for threads to finish (pthread join) -> ends when a philo dies or all philos have eaten the required times
 int	start_simulation(t_simulation *data, t_philo *philo)
 {
-	int i;
 	pthread_t *philo_thr;
 	pthread_t monitor;
 	int created_count;
@@ -82,40 +81,17 @@ int	start_simulation(t_simulation *data, t_philo *philo)
 	philo_thr = malloc(sizeof(pthread_t) * data->philos_num);
 	if (!philo_thr)
 		return (0);
-	i = 0;
-	while (i < data->philos_num)
-	{
-		pthread_mutex_lock(&philo[i].mutex_meal_times); // protected by mutex just for safety, threads not running yet
-		philo[i].time_of_last_eat = 0; // All start at time 0, now relative to starting time that we set before
-		pthread_mutex_unlock(&philo[i].mutex_meal_times);
-		i++;
-	}
+	init_philo_meal_times(philo, data->philos_num);
 	if (data->philos_num == 1)
+		return (handle_lonely_philo(philo, philo_thr));
+	created_count = create_philo_threads(data, philo, philo_thr);
+	if (created_count == 0)
 	{
-		if (pthread_create(&philo_thr[0], NULL, philo_life_routine, &philo[0]) != 0)
-		{
-			free(philo_thr);
-			return (0);
-		}
-		pthread_join(philo_thr[0], NULL);
 		free(philo_thr);
-		return (1);
+		return (0);
 	}
-	created_count = 0;
-	while (created_count < data->philos_num)
+	if (!create_monitor_thread(data, philo, philo_thr, &monitor))
 	{
-		if (pthread_create(&philo_thr[created_count], NULL, philo_life_routine, &philo[created_count]) != 0) // if it fails
-		{
-			set_stop_flag(data, 1); // set stop flag so if there's some threads running they will exit
-			join_threads(philo_thr, created_count, NULL, 0); // wait for threads already created, monitor not created so NULL and 0
-			return (0);
-		}
-		created_count++;
-	}
-	if (pthread_create(&monitor, NULL, monitor_routine, philo) != 0)
-	{
-		set_stop_flag(data, 1);
-		join_threads(philo_thr, created_count, NULL, 0);
 		free(philo_thr);
 		return (0);
 	}

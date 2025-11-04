@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 11:37:49 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/03 11:59:32 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/04 12:00:29 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef struct s_philo
 
 int	validate_input(t_simulation *data, char **argv);
 void	*monitor_routine(void *arg);
+void	*philo_life_routine(void *arg);
 int		start_simulation(t_simulation *data, t_philo *philo);
 t_philo	*init_structs(t_simulation *data);
 long	time_since_start(t_simulation *data);
@@ -58,5 +59,10 @@ void	leave_forks(t_philo *philo);
 void	sleep_philo(t_philo *philo);
 int	is_simulation_over(t_simulation *data);
 void	set_stop_flag(t_simulation *data, int value);
+void init_philo_meal_times(t_philo *philo, int philos_num);
+int handle_lonely_philo(t_philo *philo, pthread_t *philo_thr);
+int create_philo_threads(t_simulation *data, t_philo *philo, pthread_t *philo_thr);
+int create_monitor_thread(t_simulation *data, t_philo *philo, pthread_t *philo_thr, pthread_t *monitor);
+void	join_threads(pthread_t *philo, int count, pthread_t *monit, int monit_cr);
 
 #endif
