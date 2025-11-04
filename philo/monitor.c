@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:58:41 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/04 10:30:14 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/04 13:00:31 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,16 @@ static int	philos_ate_enough(t_philo *philo, t_simulation *data)
 	}
 	return (1); // all ate enough
 }
-
+void announce_death(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->data->mutex_print);
+	if (!is_simulation_over(philo->data))
+	{
+		printf("%ld %d died\n", time_since_start(philo->data), philo->id);
+		set_stop_flag(philo->data, 1); 	// stop the simulation so other threads exit
+	}
+	pthread_mutex_unlock(&philo->data->mutex_print);
+}
 void	*monitor_routine(void *arg)
 {
 	t_philo *philo;
@@ -66,10 +75,13 @@ void	*monitor_routine(void *arg)
 			pthread_mutex_unlock(&philo[i].mutex_meal_times);
 			if (since_last_meal > data->time_to_die) // if starved, not using the safe print because it's the one that needs to set the flag
 			{
+				/*
 				set_stop_flag(data, 1);
 				pthread_mutex_lock(&data->mutex_print);
 				printf("%ld %d died\n", time_since_start(data), philo[i].id);
 				pthread_mutex_unlock(&data->mutex_print);
+				*/
+				announce_death(&philo[i]);
 				return (NULL);
 			}
 			i++;

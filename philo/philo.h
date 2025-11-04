@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 11:37:49 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/04 12:00:29 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/04 12:48:59 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,5 +64,7 @@ int handle_lonely_philo(t_philo *philo, pthread_t *philo_thr);
 int create_philo_threads(t_simulation *data, t_philo *philo, pthread_t *philo_thr);
 int create_monitor_thread(t_simulation *data, t_philo *philo, pthread_t *philo_thr, pthread_t *monitor);
 void	join_threads(pthread_t *philo, int count, pthread_t *monit, int monit_cr);
+void announce_death(t_philo *philo);
+void	safe_printing_actions(t_philo *philo, const char *str);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:56:54 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/04 12:00:24 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/04 12:48:12 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static	void	lonely_philo(t_philo *philo)
 {
+	/*
 	pthread_mutex_lock(philo->left_fork); // lock the only fork
 	pthread_mutex_lock(&philo->data->mutex_print);
 	printf("%ld %d has taken a fork\n", time_since_start(philo->data), philo->id);
@@ -23,6 +24,12 @@ static	void	lonely_philo(t_philo *philo)
 	printf("%ld %d died\n", time_since_start(philo->data), philo->id);
 	pthread_mutex_unlock(&philo->data->mutex_print);
 	set_stop_flag(philo->data, 1);
+	pthread_mutex_unlock(philo->left_fork);
+	*/
+	pthread_mutex_lock(philo->left_fork);
+	safe_printing_actions(philo, "has taken a fork");
+	usleep(philo->data->time_to_die * 1000);
+	announce_death(philo);
 	pthread_mutex_unlock(philo->left_fork);
 }
 
