@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:56:54 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/06 09:36:39 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/06 10:33:32 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ static	void	lonely_philo(t_philo *philo)
 /*
 * Philosopher thread routine that handles philo's life cycle. 
 * Odd numbered philos wait before starting to prevent deadlock.
-* Runs if simulation is running (no one died) and there's no limit for the meal times or
-* until everyone has eaten enough.
+* Runs if simulation is running (no one died) and there's no limit 
+* for the meal times or until everyone has eaten enough.
 * After taking forks, checks again if simulation stopped while taking them,
 * so we can release them before stopping.
 */
@@ -45,12 +45,12 @@ void	*philo_life_routine(void *arg)
 	}
 	if (philo->id % 2 != 0)
 		usleep(philo->data->time_to_eat / 2 * 1000);
-	while (!is_simulation_over(philo->data) && (philo->data->must_eat_count == -1
+	while (!is_simulation_ko(philo->data) && (philo->data->must_eat_count == -1
 			|| philo->times_eaten < philo->data->must_eat_count))
 	{
 		think(philo);
 		take_forks(philo);
-		if (is_simulation_over(philo->data))
+		if (is_simulation_ko(philo->data))
 		{
 			leave_forks(philo);
 			break ;
@@ -66,14 +66,14 @@ void	*philo_life_routine(void *arg)
 * Waits for all created philo threads to finish,
 * and waits for monitor thread if it was successfully created.
 */
-void	join_threads(pthread_t *philo, int count, pthread_t *monit, int monit_cr)
+void	join_threads(pthread_t *ph, int count, pthread_t *monit, int monit_cr)
 {
 	int	i;
 
 	i = 0;
 	while (i < count)
 	{
-		pthread_join(philo[i], NULL);
+		pthread_join(ph[i], NULL);
 		i++;
 	}
 	if (monit_cr)
@@ -103,7 +103,7 @@ int	start_simulation(t_simulation *data, t_philo *philo)
 		free(philo_thr);
 		return (0);
 	}
-	if (!create_monitor_thread(data, philo, philo_thr, &monitor))
+	if (!monit_thr(data, philo, philo_thr, &monitor))
 	{
 		free(philo_thr);
 		return (0);

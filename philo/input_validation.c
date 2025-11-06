@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 10:29:08 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/06 09:15:04 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/06 10:21:03 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ static long	ft_atol(const char *str)
 	}
 	return (result);
 }
+
 /*
 * Checks if a string contains only positive digit chars.
 * Returns 1 if valid (only digits), 0 if invalid or empty.
@@ -51,6 +52,7 @@ static int	is_only_positive_digit(char *str)
 	}
 	return (1);
 }
+
 /*
 * Validates and converts argument string to integer.
 * Returns -1 if value is 0 or exceeds INT_MAX.
@@ -65,8 +67,10 @@ static int	get_valid_arg(char *str)
 		return (-1);
 	return ((int)value);
 }
+
 /*
-* Parses argument string and stores valid value in destination.
+* Parses argument string, ensures it's numeric and within range,
+* and stores the converted value in destination.
 * Prints error message if argument is invalid and returns 0.
 * Returns 1 on success.
 */
@@ -74,6 +78,11 @@ static int	parse_and_store_arg(int *dest, char *arg, const char *message)
 {
 	int	value;
 
+	if (!is_only_positive_digit(arg))
+	{
+		printf("Argument must be positive number\n");
+		return (0);
+	}
 	value = get_valid_arg(arg);
 	if (value == -1)
 	{
@@ -86,34 +95,26 @@ static int	parse_and_store_arg(int *dest, char *arg, const char *message)
 
 /*
 * Validates all arguments and stores them in simulation data.
-* Skips the program name, and checks that all arguments are positive and valid.
 * Returns 1 if all arguments are valid, 0 if any is invalid.
 */
 int	validate_input(t_simulation *data, char **argv)
 {
-	int	i;
-
-	i = 1;
-	while (argv[i])
-	{
-		if (!is_only_positive_digit(argv[i]))
-		{
-			printf("Argument must be positive number\n");
-			return (0);
-		}
-		i++;
-	}
-	if (!parse_and_store_arg(&data->philos_num, argv[1], "Invalid number of philos"))
+	if (!parse_and_store_arg(&data->philos_num, argv[1],
+			"Invalid number of philos"))
 		return (0);
-	if (!parse_and_store_arg(&data->time_to_die, argv[2], "Invalid time_to_die"))
+	if (!parse_and_store_arg(&data->time_to_die, argv[2],
+			"Invalid time_to_die"))
 		return (0);
-	if (!parse_and_store_arg(&data->time_to_eat, argv[3], "Invalid time_to_eat"))
+	if (!parse_and_store_arg(&data->time_to_eat, argv[3],
+			"Invalid time_to_eat"))
 		return (0);
-	if (!parse_and_store_arg(&data->time_to_sleep, argv[4], "Invalid time_to_sleep"))
+	if (!parse_and_store_arg(&data->time_to_sleep, argv[4],
+			"Invalid time_to_sleep"))
 		return (0);
 	if (argv[5])
 	{
-		if (!parse_and_store_arg(&data->must_eat_count, argv[5], "Invalid must_eat_count"))
+		if (!parse_and_store_arg(&data->must_eat_count, argv[5],
+				"Invalid must_eat_count"))
 			return (0);
 	}
 	else

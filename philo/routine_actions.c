@@ -6,27 +6,16 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 11:37:14 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/06 09:23:46 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/06 10:37:04 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 /*
-* Thread-safe printing of philo actions with timestamp.
-* Only prints if simulation is still running.
-*/
-void	safe_printing_actions(t_philo *philo, const char *str)
-{
-	pthread_mutex_lock(&philo->data->mutex_print);
-	if (!philo->data->stop_simulation)
-		printf("%ld %d %s\n", time_since_start(philo->data), philo->id, str);
-	pthread_mutex_unlock(&philo->data->mutex_print);
-}
-
-/*
-* Calculates and executes appropriate thinking time for philo, adapts thinking time based
-* on how close they are to starving. Prevents deadlock by managing when philos compete for forks.
+* Calculates and executes appropriate thinking time for philo,
+* adapts thinking time based on how close they are to starving.
+* Prevents deadlock by managing when philos compete for forks.
 */
 void	think(t_philo *philo)
 {
@@ -35,14 +24,14 @@ void	think(t_philo *philo)
 	long	time_since_meal;
 	long	remaining;
 
-	if (is_simulation_over(philo->data))
+	if (is_simulation_ko(philo->data))
 		return ;
 	safe_printing_actions(philo, "is thinking");
 	pthread_mutex_lock(&philo->mutex_meal_times);
 	time_since_meal = time_since_start(philo->data) - philo->time_of_last_eat;
 	pthread_mutex_unlock(&philo->mutex_meal_times);
-	safe_time_before_death = philo->data->time_to_die - (philo->data->time_to_eat
-			+ philo->data->time_to_sleep);
+	safe_time_before_death = philo->data->time_to_die
+		- (philo->data->time_to_eat + philo->data->time_to_sleep);
 	think_time = 0;
 	if (safe_time_before_death > 0)
 	{
@@ -53,6 +42,7 @@ void	think(t_philo *philo)
 	if (think_time > 0)
 		usleep (think_time * 1000);
 }
+
 /*
 * Even philos take right fork first, odd take left first.
 * Prevents deadlock by ensuring consistent fork taking order.
@@ -78,13 +68,14 @@ void	take_forks(t_philo *philo)
 /*
 * Philo eats for the specified time duration.
 * Updates meal time and count, checks frequently for simulation end.
-* Gets the time_of_last_eat at the beginning of the function, so the monitor can get the correct value.
+* Gets the time_of_last_eat at the beginning of the function,
+* so the monitor can get the correct value.
 */
 void	eat(t_philo *philo)
 {
 	long	start_action;
 
-	if (is_simulation_over(philo->data))
+	if (is_simulation_ko(philo->data))
 		return ;
 	pthread_mutex_lock(&philo->mutex_meal_times);
 	philo->time_of_last_eat = time_since_start(philo->data);
@@ -92,12 +83,15 @@ void	eat(t_philo *philo)
 	pthread_mutex_unlock(&philo->mutex_meal_times);
 	safe_printing_actions(philo, "is eating");
 	start_action = time_since_start(philo->data);
-	while (!is_simulation_over(philo->data)
-		&& (time_since_start(philo->data) - start_action) < philo->data->time_to_eat)
-		usleep(500); 
+	while (!is_simulation_ko(philo->data)
+		&& (time_since_start(philo->data) - start_action)
+		< philo->data->time_to_eat)
+		usleep(500);
 }
+
 /*
-* Philo releases both forks in order based on their id, order matches fork acquisition order.
+* Philo releases both forks in order based on their id,
+* order matches fork acquisition order.
 */
 void	leave_forks(t_philo *philo)
 {
@@ -112,19 +106,21 @@ void	leave_forks(t_philo *philo)
 		pthread_mutex_unlock(philo->left_fork);
 	}
 }
+
 /*
 * Philo sleeps for the specified time duration.
 * Checks frequently for simulation end to allow quick exit.
 */
 void	sleep_philo(t_philo *philo)
 {
-	long start_action;
+	long	start_action;
 
-	if (is_simulation_over(philo->data))
+	if (is_simulation_ko(philo->data))
 		return ;
 	safe_printing_actions(philo, "is sleeping");
 	start_action = time_since_start(philo->data);
-	while (!is_simulation_over(philo->data) 
-		&& (time_since_start(philo->data) - start_action) < philo->data->time_to_sleep)
+	while (!is_simulation_ko(philo->data)
+		&& (time_since_start(philo->data) - start_action)
+		< philo->data->time_to_sleep)
 		usleep(500);
 }

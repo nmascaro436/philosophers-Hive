@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:58:41 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/06 09:44:22 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/06 10:37:51 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 * Thread_safe check to read flag and determine if simulation has ended.
 * Returns the current value of the stop_simulation flag.
 */
-int	is_simulation_over(t_simulation *data)
+int	is_simulation_ko(t_simulation *data)
 {
 	int	val;
 
@@ -60,37 +60,24 @@ static int	philos_ate_enough(t_philo *philo, t_simulation *data)
 }
 
 /*
-* Prints death message and sets the stop flag to end the simulation.
-* Only prints if the simulation hasn't already stopped.
-*/
-void	announce_death(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->data->mutex_print);
-	if (!is_simulation_over(philo->data))
-	{
-		printf("%ld %d died\n", time_since_start(philo->data), philo->id);
-		set_stop_flag(philo->data, 1);
-	}
-	pthread_mutex_unlock(&philo->data->mutex_print);
-}
-/*
 * Checks if philo has starved by comparing time since last meal.
 * Returns 1 if philo died, 0 otherwise.
 */
-static int check_philo_starvation(t_philo *philo, t_simulation *data)
+static int	check_philo_starvation(t_philo *philo, t_simulation *data)
 {
-	long since_last_meal;
+	long	since_last_meal;
 
 	pthread_mutex_lock(&philo->mutex_meal_times);
 	since_last_meal = time_since_start(data) - philo->time_of_last_eat;
 	pthread_mutex_unlock(&philo->mutex_meal_times);
 	if (since_last_meal > data->time_to_die)
-	{	
+	{
 		announce_death(philo);
 		return (1);
 	}
 	return (0);
 }
+
 /*
 * Monitor thread routine that checks regularly for philo starvation and
 * verifies all have eaten enough. Exits when simulation ends.
@@ -100,10 +87,10 @@ void	*monitor_routine(void *arg)
 	t_philo			*philo;
 	int				i;
 	t_simulation	*data;
-	
+
 	philo = (t_philo *)arg;
 	data = philo[0].data;
-	while (!is_simulation_over(data))
+	while (!is_simulation_ko(data))
 	{
 		i = 0;
 		while (i < data->philos_num)
