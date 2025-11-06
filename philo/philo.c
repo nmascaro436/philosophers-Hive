@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:56:54 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/06 10:33:32 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/06 11:34:29 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int	start_simulation(t_simulation *data, t_philo *philo)
 	if (data->philos_num == 1)
 		return (handle_lonely_philo(philo, philo_thr));
 	created_count = create_philo_threads(data, philo, philo_thr);
-	if (created_count == 0)
+	if (!created_count)
 	{
 		free(philo_thr);
 		return (0);

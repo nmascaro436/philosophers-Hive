@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 11:37:23 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/06 10:34:00 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/06 11:34:56 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ int	monit_thr(t_simulation *dat, t_philo *ph, pthread_t *ph_thr, pthread_t *mon)
 	{
 		set_stop_flag(dat, 1);
 		join_threads(ph_thr, dat->philos_num, NULL, 0);
-		free(ph_thr);
 		return (0);
 	}
 	return (1);
