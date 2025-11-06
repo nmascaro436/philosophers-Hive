@@ -6,12 +6,16 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 10:29:08 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/04 15:20:46 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/06 09:15:04 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/*
+* Converts a string to a long integer, skiping leading whitespace.
+* Returns the converted value.
+*/
 static long	ft_atol(const char *str)
 {
 	long	result;
@@ -28,7 +32,10 @@ static long	ft_atol(const char *str)
 	}
 	return (result);
 }
-
+/*
+* Checks if a string contains only positive digit chars.
+* Returns 1 if valid (only digits), 0 if invalid or empty.
+*/
 static int	is_only_positive_digit(char *str)
 {
 	int	i;
@@ -44,17 +51,25 @@ static int	is_only_positive_digit(char *str)
 	}
 	return (1);
 }
-
+/*
+* Validates and converts argument string to integer.
+* Returns -1 if value is 0 or exceeds INT_MAX.
+* Returns the integer value on ssuccess.
+*/
 static int	get_valid_arg(char *str)
 {
 	long	value;
 
-	value = ft_atol(str); // convert string to integer
+	value = ft_atol(str);
 	if (value == 0 || value > INT_MAX)
 		return (-1);
-	return ((int)value); // we already checked for overflow so we cast it to int
+	return ((int)value);
 }
-
+/*
+* Parses argument string and stores valid value in destination.
+* Prints error message if argument is invalid and returns 0.
+* Returns 1 on success.
+*/
 static int	parse_and_store_arg(int *dest, char *arg, const char *message)
 {
 	int	value;
@@ -69,12 +84,16 @@ static int	parse_and_store_arg(int *dest, char *arg, const char *message)
 	return (1);
 }
 
-//returns 0 if invalid and 1 if valid
+/*
+* Validates all arguments and stores them in simulation data.
+* Skips the program name, and checks that all arguments are positive and valid.
+* Returns 1 if all arguments are valid, 0 if any is invalid.
+*/
 int	validate_input(t_simulation *data, char **argv)
 {
 	int	i;
 
-	i = 1; // to skip program name
+	i = 1;
 	while (argv[i])
 	{
 		if (!is_only_positive_digit(argv[i]))
@@ -98,6 +117,6 @@ int	validate_input(t_simulation *data, char **argv)
 			return (0);
 	}
 	else
-		data->must_eat_count = -1; // meal count not set so run until someone dies
+		data->must_eat_count = -1;
 	return (1);
 }
