@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 10:38:36 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/06 10:37:44 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/07 11:11:59 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,12 @@ long	time_since_start(t_simulation *data)
 */
 void	safe_printing_actions(t_philo *philo, const char *str)
 {
+	pthread_mutex_lock(&philo->data->mutex_stop_simulation);
 	pthread_mutex_lock(&philo->data->mutex_print);
 	if (!philo->data->stop_simulation)
 		printf("%ld %d %s\n", time_since_start(philo->data), philo->id, str);
 	pthread_mutex_unlock(&philo->data->mutex_print);
+	pthread_mutex_unlock(&philo->data->mutex_stop_simulation);
 }
 
 /*
