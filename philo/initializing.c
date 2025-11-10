@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 10:34:28 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/06 10:34:58 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/10 12:04:46 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,5 @@ t_philo	*init_structs(t_simulation *data)
 	}
 	pthread_mutex_init(&data->mutex_print, NULL);
 	data->stop_simulation = 0;
-	pthread_mutex_init(&data->mutex_stop_simulation, NULL);
 	return (philos);
 }

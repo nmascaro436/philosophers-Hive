@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 11:37:49 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/06 10:33:38 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/10 12:16:14 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <unistd.h>
+# include <stdatomic.h>
 
 typedef struct s_simulation
 {
@@ -30,7 +31,7 @@ typedef struct s_simulation
 	long			starting_time;
 	pthread_mutex_t	*fork;
 	pthread_mutex_t	mutex_print;
-	int				stop_simulation;
+	atomic_int		stop_simulation;
 	pthread_mutex_t	mutex_stop_simulation;
 }					t_simulation;
 

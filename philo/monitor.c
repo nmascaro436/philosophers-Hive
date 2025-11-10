@@ -6,7 +6,7 @@
 /*   By: nmascaro <nmascaro@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:58:41 by nmascaro          #+#    #+#             */
-/*   Updated: 2025/11/06 10:37:51 by nmascaro         ###   ########.fr       */
+/*   Updated: 2025/11/10 12:05:04 by nmascaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,7 @@ int	is_simulation_ko(t_simulation *data)
 {
 	int	val;
 
-	pthread_mutex_lock(&data->mutex_stop_simulation);
 	val = data->stop_simulation;
-	pthread_mutex_unlock(&data->mutex_stop_simulation);
 	return (val);
 }
 
@@ -32,9 +30,7 @@ int	is_simulation_ko(t_simulation *data)
  */
 void	set_stop_flag(t_simulation *data, int value)
 {
-	pthread_mutex_lock(&data->mutex_stop_simulation);
 	data->stop_simulation = value;
-	pthread_mutex_unlock(&data->mutex_stop_simulation);
 }
 
 /*
